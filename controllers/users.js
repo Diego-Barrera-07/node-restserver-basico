@@ -1,5 +1,5 @@
 const { response } = require('express')
-
+const res = response
 const usuariosGet = (req, res) => {
     const query = req.query
     const {q='no query', nombre} = query
