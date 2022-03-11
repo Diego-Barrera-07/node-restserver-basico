@@ -1,10 +1,8 @@
 const { response, request } = require('express')
 const User = require('../models/user')
 const bcryptjs = require('bcryptjs')
-const req = request
-const res = response
 
-const usuariosGet = async (req, res) => {
+const usuariosGet = async (req = request, res = response) => {
     // const query = req.query
     // const { q = 'no query', nombre } = query
     const { limit = 5, since = 1 } = req.query
@@ -30,7 +28,7 @@ res.json({
     limitQuery
 })
 }
-const usuariosPost = async (req, res) => {
+const usuariosPost = async (req = request, res = response) => {
     const { name, email, password, role } = req.body;
     const user = new User({ name, email, password, role });
     // Encriptar la contraeña
@@ -43,7 +41,7 @@ const usuariosPost = async (req, res) => {
         user
     })
 }
-const usuariosPut = async (req, res) => {
+const usuariosPut = async (req = request, res = response) => {
     const id = req.params.id;
     const { _id, password, google, email, ...resto } = req.body
     // Validacion
@@ -57,12 +55,12 @@ const usuariosPut = async (req, res) => {
         userDB
     })
 }
-const usuariosPatch = (req, res) => {
+const usuariosPatch = (req = request, res = response) => {
     res.json({
         msg: "patch Api"
     })
 }
-const usuariosDelete = async(req, res) => {
+const usuariosDelete = async(req = request, res = response) => {
     const {id} = req.params
     // Eliminar físicamente - no recomendado ahora
     const user = await User.findByIdAndDelete(id)
