@@ -1,28 +1,60 @@
-const { response } = require('express')
+const { response, request } = require('express')
+const User = require('../models/user')
+const bcryptjs = require('bcryptjs')
+const req = request
 const res = response
-const usuariosGet = (req, res) => {
-    const query = req.query
-    const {q='no query', nombre} = query
+
+const usuariosGet = async (req, res) => {
+    // const query = req.query
+    // const { q = 'no query', nombre } = query
+    const { limit = 5, since = 1 } = req.query
+    // Recuerda no poner{} en find si quieres todos los usarios, si necesitas solo
+    // los que cumplan cierta condición hazlo así:
+    // const users = await User.find({ estado: true })
+    //     .skip(Number(since))
+    //     .limit(Number(limit));
+    // const userLength = await User.countDocuments({ estado: true })
+    // Esta es una optimización del código de arriba para que se ejecuten al tiempo
+    const query = {estado: true}
+    const [ userLength, limitQuery] = await Promise.all([
+        User.countDocuments(query),
+        User.find(query)
+            .skip(Number(since))
+            .limit(Number(limit))
+
+    ])
+
+res.json({
+    msg: 'LISTADO DE USUARIOS',
+    userLength,
+    limitQuery
+})
+}
+const usuariosPost = async (req, res) => {
+    const { name, email, password, role } = req.body;
+    const user = new User({ name, email, password, role });
+    // Encriptar la contraeña
+    const salt = bcryptjs.genSaltSync()
+    user.password = bcryptjs.hashSync(password, salt)
+    // Guardar en la DB
+    await user.save();
     res.json({
-        msg: 'Get API - Contoller',
-        q,
-        nombre
+        msg: "Enviado correctamente por Post a la DB",
+        user
     })
 }
-const usuariosPut = (req, res) => {
-    const  id  = req.params.id;
-    res.status(400).json({
-        msg: "get Api",
-        id
-    })
-}
-const usuariosPost = (req, res) => {
-    const body = req.body;
-    const { nombre, id } = body
-    res.status(201).json({
-        msg: "post Api",
-        nombre,
-        id
+const usuariosPut = async (req, res) => {
+    const id = req.params.id;
+    const { _id, password, google, email, ...resto } = req.body
+    // Validacion
+    if (password) {
+        const salt = bcryptjs.genSaltSync()
+        resto.password = bcryptjs.hashSync(password, salt)
+    }
+    const userDB = await User.findByIdAndUpdate(id, resto)
+    res.json({
+        msg: "Actualizando datos",
+        userDB
     })
 }
 const usuariosPatch = (req, res) => {
@@ -30,9 +62,15 @@ const usuariosPatch = (req, res) => {
         msg: "patch Api"
     })
 }
-const usuariosDelete = (req, res) => {
+const usuariosDelete = async(req, res) => {
+    const {id} = req.params
+    // Eliminar físicamente - no recomendado ahora
+    const user = await User.findByIdAndDelete(id)
+    // Eliminación recomendada, cambio de estado en la base de datos
+    const uuser = await User.findByIdAndUpdate(id, {estado: false})
     res.json({
-        msg: "Delete Api"
+        msg: "Delete user",
+        user
     })
 }
 module.exports = {
