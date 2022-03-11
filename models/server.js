@@ -31,7 +31,7 @@ class Server {
         this.app.use(this.usuersRoutePath, require('../routes/users'))
     }
     listen() {
-        this.app.listen(this.port, () => {
+        this.app.listen(this.port || 8080, () => {
             console.log('Servidor en el puerto', process.env.PORT)
         })
     }
