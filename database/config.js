@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const dbConnection = async () => {
+    const tryToConnect = 'mongodb+srv://diegobarrera07:4bx1TrEXVYUpi0s4@cafenodedb.w0ome.mongodb.net/cafeDB'
     try {
-        await mongoose.connect(process.env.MONGODB_CONNECTION, {
+        await mongoose.connect(process.env.MONGODB_CONNECTION || tryToConnect, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
