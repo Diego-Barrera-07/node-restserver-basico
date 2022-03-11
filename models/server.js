@@ -7,7 +7,7 @@ class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT
-        this.usuersRoutePath = '/api/users'
+        this.usersRoutePath = '/api/users';
         // Conectar a base de datos
         this.databaseConnect();
         // Middlewares
@@ -28,7 +28,7 @@ class Server {
         this.app.use(express.static('public'))
     }
     routes() {
-        this.app.use(this.usuersRoutePath, require('../routes/users'))
+        this.app.use(this.usersRoutePath, require('../routes/users'))
     }
     listen() {
         this.app.listen(this.port || 8080, () => {
