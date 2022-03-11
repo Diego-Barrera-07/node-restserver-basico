@@ -15,7 +15,7 @@ const usuariosGet = async (req = request, res = response) => {
     // Esta es una optimización del código de arriba para que se ejecuten al tiempo
     const query = {estado: true}
     const [ userLength, limitQuery] = await Promise.all([
-        User.countDocuments(query),
+        User.count(query),
         User.find(query)
             .skip(Number(since))
             .limit(Number(limit))
