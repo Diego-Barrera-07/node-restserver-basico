@@ -1,11 +1,11 @@
-const { Router } = require('express')
+const { Router } = require('express');
 const { check } = require('express-validator')
 const validarCampos = require('../middlewares/validarCampos')
 const { validarJwt } = require('../middlewares/validar-jwt')
 const { userAuthorized, rolesAuthorized } = require('../middlewares/validarRolAuth')
 const { usuariosGet, usuariosPost, usuariosDelete, usuariosPut, usuariosPatch } = require('../controllers/users')
 const { roleValidation, emailValidation, idValidation } = require('../helpers/db-validators')
-const router = Router()
+const router = Router();
 
 router.get('/', usuariosGet);
 router.put('/:id', [
@@ -31,4 +31,4 @@ router.delete('/:id', [
 ], usuariosDelete);
 router.patch('/', usuariosPatch)
 
-module.exports = router
+module.exports = router;
