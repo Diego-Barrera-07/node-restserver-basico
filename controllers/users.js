@@ -62,13 +62,18 @@ const usuariosPatch = (req = request, res = response) => {
 }
 const usuariosDelete = async(req = request, res = response) => {
     const {id} = req.params
+    const uid = req.uid;
+    const userAuthorized = req.user;
     // Eliminar físicamente - no recomendado ahora
-    const user = await User.findByIdAndDelete(id)
+    // const user = await User.findByIdAndDelete(id)
     // Eliminación recomendada, cambio de estado en la base de datos
-    const uuser = await User.findByIdAndUpdate(id, {estado: false})
+    const userStatus = await User.findByIdAndUpdate(id, {estado: false})
+
     res.json({
         msg: "Delete user",
-        user
+        userAuthorized,
+        userStatus,
+        uid
     })
 }
 module.exports = {
